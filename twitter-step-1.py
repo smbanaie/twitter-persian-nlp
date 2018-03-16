@@ -25,26 +25,29 @@ class TweetListener(StreamListener):
         try:
             self.counter +=1
             json_data = json.loads(data)
-            # ایجاد پوشه و ذخیره توییت با آی دی در فایلهای متنی
-            Tweet_Directory = 'tweets/'+datetime.now().strftime("%Y-%m-%d")
-            pathlib.Path(Tweet_Directory).mkdir(parents=True, exist_ok=True)
-            with codecs.open(Tweet_Directory+"/"+str(json_data["id"])+'.txt', 'a',encoding="utf-8") as f:
-                f.write(json_data["id"],json_data["user"]["id"],json_data["timestamp"],json_data["text"],"|".join(json_data["entities"]["hashtags"]),json_data["text"].replace('\n', ' '))
-                print("\n" + "*" * 50 + "\n" + str(self.counter) + " : \n" + json_data["text"].replace("\n", " "))
+            Tweet_File_Name = 'tweets/'+datetime.now().strftime("%Y-%m-%d")+".txt"
+            with codecs.open(Tweet_File_Name, 'a',encoding="utf-8") as f:
+                if 'extended_tweet' in json_data:
+                    if 'full_text' in json_data['extended_tweet']:
+                        tweet = json_data['extended_tweet']['full_text']
+                    else:
+                        pass  # i need to figure out what is possible here
+                elif 'text' in json_data:
+                    tweet = json_data['text']
+
+                final_text = "%s_^_%s\r\n" % (json_data["id"],tweet.replace('\n', ' '))
+                f.write(final_text)
+                print(str(self.counter) +"\t" + final_text)
                 return True
-
-
-
-
 
 
         except BaseException as e:
             print("Error on_data: %s" % str(e))
-            return False
+            return True
 
     def on_error(self, status):
         print(status)
         return True
 
-twitter_stream = Stream(auth, TweetListener())
+twitter_stream = Stream(auth=auth,listener= TweetListener(),tweet_mode='extended')
 twitter_stream.filter(languages=['fa'], track=['با' , 'از','به','در'])
