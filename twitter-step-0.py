@@ -25,7 +25,6 @@ class TweetListener(StreamListener):
     def on_data(self, data):
 
             json_data = json.loads(data)
-            print("Original Data : ")
 
             print("Tweet ID : "+str(json_data["id"]))
             print(" User ID : "+str(json_data["user"]["id"]))
@@ -47,4 +46,8 @@ class TweetListener(StreamListener):
         return True
 
 twitter_stream = Stream(auth, TweetListener())
+
+
+
+
 twitter_stream.filter(languages=['fa'], track=['با' , 'از','به','در'])
