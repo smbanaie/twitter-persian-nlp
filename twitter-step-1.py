@@ -30,11 +30,12 @@ class TweetListener(StreamListener):
             pathlib.Path(Tweet_Directory).mkdir(parents=True, exist_ok=True)
             with codecs.open(Tweet_Directory+"/"+str(json_data["id"])+'.txt', 'a',encoding="utf-8") as f:
                 f.write(json_data["id"],json_data["user"]["id"],json_data["timestamp"],json_data["text"],"|".join(json_data["entities"]["hashtags"]),json_data["text"].replace('\n', ' '))
+                print("\n" + "*" * 50 + "\n" + str(self.counter) + " : \n" + json_data["text"].replace("\n", " "))
+                return True
 
 
 
-            print("\n"+"*"*50 +"\n"+str(self.counter) + " : \n"+ json_data["text"].replace("\n"," "))
-            return True
+
 
 
         except BaseException as e:
