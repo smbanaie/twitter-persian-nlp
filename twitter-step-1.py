@@ -35,7 +35,7 @@ class TweetListener(StreamListener):
                 elif 'text' in json_data:
                     tweet = json_data['text']
 
-                final_text = "%s_^_%s\r\n" % (json_data["id"],tweet.replace('\n', ' '))
+                final_text = "%s\t%s\r\n" % (json_data["id"],(tweet.replace('\n', ' ')).replace('\t',''))
                 f.write(final_text)
                 print(str(self.counter) +"\t" + final_text)
                 return True
