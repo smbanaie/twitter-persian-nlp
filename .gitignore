@@ -102,3 +102,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# eval $(ssh-agent -s)
+# ssh-add ~/.ssh/s_rsa_nlp
