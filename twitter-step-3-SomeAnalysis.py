@@ -10,7 +10,6 @@ all_rec = glob.iglob(os.path.join(path, "*.txt"), recursive=True)
 dataframes = (pd.read_csv(f,sep="\t",encoding="utf8",header=None,names=["ID","Text"], dtype={'ID' : np.str}) for f in all_rec)
 df = pd.concat(dataframes, ignore_index=True)
 
-
 def avg_word(sentence):
   words = str(sentence).split()
   return (sum(len(word) for word in words)/len(words))
@@ -28,9 +27,11 @@ short_tweets = df[df["word_count"] < 5]
 print(short_tweets.head())
 short_tweets.to_csv(r'output\step2\short_texts.txt',sep='\t',index=False, encoding='utf-8',header=True,columns=["ID","Text"])
 
+
 long_tweets = df[(df["word_count"] < 10) & (df["avg_word"]>5)]
 print(long_tweets.head())
-short_tweets.to_csv(r'output\step2\long_texts.txt',sep='\t',index=False, encoding='utf-8',header=True,columns=["ID","Text"])
+long_tweets.to_csv(r'output\step2\long_texts.txt',sep='\t',index=False, encoding='utf-8',header=True,columns=["ID","Text"])
+
 
 
 print("&"*50)
@@ -44,7 +45,6 @@ df['Text'] = df['Text'].apply(lambda x: " ".join(x for x in x.split() if x not i
 print("#"*50)
 freq2 = pd.Series(' '.join(df['Text']).split()).value_counts()[-50:]
 print(freq2)
-
 
 
 df.to_csv(r'output\step2\tweets_all.txt',sep='\t',index=False, encoding='utf-8',header=True,columns=["ID","avg_word","word_count","Text"],float_format='%0.2f')
