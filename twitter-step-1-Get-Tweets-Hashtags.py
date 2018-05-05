@@ -24,23 +24,31 @@ class TweetListener(StreamListener):
     def on_data(self, data):
         try:
             json_data = json.loads(data)
-            Tweet_File_Name = 'tweets/'+datetime.now().strftime("%Y-%m-%d")+".txt"
+            # ایجاد پوشه و ذخیره توییت با آی دی در فایلهای متنی
+            Tweet_Directory = 'tweets/'+datetime.now().strftime("%Y-%m-%d")
 
             if 'extended_tweet' in json_data:
                 if 'full_text' in json_data['extended_tweet']:
                     tweet_text = json_data['extended_tweet']['full_text']
                 else:
-                    tweet_text = json_data['text']
+                    pass  # i need to figure out what is possible here
             elif 'text' in json_data:
                 tweet_text = json_data['text']
 
-            final_text = "%s\t%s\r\n" % (json_data["id"],(tweet_text.replace('\n', ' ')).replace('\t',''))
-
-            if "RT" not in tweet_text:
-                with codecs.open(Tweet_File_Name, 'a', encoding="utf-8") as f:
+            tweet_text = tweet_text.replace('\n', ' ').replace("\t"," ")
+            if "RT" not in tweet_text :
+                with codecs.open("tweets-hashtags/" + datetime.now().strftime("%Y-%m-%d") + '.txt', 'a',
+                                 encoding="utf-8") as f:
                     self.counter += 1
-                    f.write(final_text)
-                    print(str(self.counter) +"\t" + final_text)
+                    str_out = json_data["id_str"] + "\t"
+                    tags = ""
+                    for hashtag in json_data["entities"]["hashtags"]:
+                        tags = tags + "," + hashtag["text"]
+                    if tags != "":
+                        tags = tags[1:]
+                    str_out = str_out + "\t" + tags + "\t" + tweet_text + "\r\n"
+                    f.write(str_out)
+                    print(str(self.counter) + " : \t" + str_out)
             return True
 
 
@@ -52,5 +60,5 @@ class TweetListener(StreamListener):
         print(status)
         return True
 
-twitter_stream = Stream(auth=auth,listener= TweetListener(),tweet_mode='extended')
+twitter_stream = Stream(auth, TweetListener())
 twitter_stream.filter(languages=['fa'], track=['با' , 'از','به','در'])

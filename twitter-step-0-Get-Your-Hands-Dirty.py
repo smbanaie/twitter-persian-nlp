@@ -1,14 +1,8 @@
 # -*- coding: utf-8 -*-import twitter_config
 
-from tweepy import OAuthHandler
-from tweepy import Stream
+from tweepy import OAuthHandler,Stream
 from tweepy.streaming import StreamListener
-import json
-import twitter_config
-from datetime import datetime
-import codecs
-
-
+import json, twitter_config
 
 consumer_key = twitter_config.consumer_key
 consumer_secret = twitter_config.consumer_secret
@@ -17,8 +11,6 @@ access_secret = twitter_config.access_secret
 
 auth = OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_secret)
-
-
 
 class TweetListener(StreamListener):
 
@@ -40,7 +32,6 @@ class TweetListener(StreamListener):
             print("-" * 20)
 
             return True
-
 
     def on_error(self, status):
         print(status)
