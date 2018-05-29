@@ -14,9 +14,6 @@ consumer_secret = twitter_config.consumer_secret
 access_token = twitter_config.access_token
 access_secret = twitter_config.access_secret
 
-auth = OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_secret)
-
 
 
 class TweetListener(StreamListener):
@@ -52,5 +49,13 @@ class TweetListener(StreamListener):
         print(status)
         return True
 
-twitter_stream = Stream(auth=auth,listener= TweetListener(),tweet_mode='extended')
-twitter_stream.filter(languages=['fa'], track=['با' , 'از','به','در'])
+try :
+
+    auth = OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_secret)
+
+    twitter_stream = Stream(auth=auth,listener= TweetListener(),tweet_mode='extended')
+    twitter_stream.filter(languages=['fa'], track=['با' , 'از','به','در'])
+
+except Exception as e :
+    print("Error Starting App : %s" % str(e))
